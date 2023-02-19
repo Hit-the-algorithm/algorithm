@@ -1,64 +1,61 @@
 import java.io.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 public class bj_13023 {
-    private static int m;
-    private static ArrayList<Integer>[] list;
-    private static int ans = 0;
-    private static boolean[] v;
+    static List<Integer>[] num;
+    static boolean vis[];
+    static boolean arrive;
 
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
         StringTokenizer st = new StringTokenizer(br.readLine());
 
-        int N = Integer.parseInt(st.nextToken());
-        int M = Integer.parseInt(st.nextToken());
-        m = M;
+        int n = Integer.parseInt(st.nextToken());
+        int m = Integer.parseInt(st.nextToken());
 
-        //DFS를 위한 인접리스트 구현하기
-        list = new ArrayList[N];
-        v = new boolean[N];
-        for(int i = 0; i < N; i++) {
-            list[i] = new ArrayList<Integer>();
+        num = new ArrayList[n];
+        vis = new boolean[n];
+        for (int i = 0; i < n;i++){
+            num[i] = new ArrayList<Integer>();
         }
 
-        for(int i = 0; i < M; i++) {
+        for (int i = 0; i < m ; i++){
             st = new StringTokenizer(br.readLine());
-            int n1 = Integer.parseInt(st.nextToken());
-            int n2 = Integer.parseInt(st.nextToken());
-            list[n1].add(n2);
-            list[n2].add(n1);
+
+            int f = Integer.parseInt(st.nextToken());
+            int s = Integer.parseInt(st.nextToken());
+
+            num[f].add(s);
+            num[s].add(f);
+
         }
 
-        //N-1까지의 모든 정점에서 DFS를 통해 확인
-        for(int i = 0; i < N; i++) {
-            if(ans == 0)
-                dfs(i, 1);
-        }
-
-        bw.write(Integer.toString(ans));
-        bw.flush();
-        bw.close();
-        br.close();
-    }
-
-    public static void dfs(int start, int depth) {
-        //System.out.println(start + " " + depth); //방문 정점과 깊이를 확인해보고 싶을 때 사용
-        if(depth == 5) {
-            ans = 1;
-            return;
-        }
-
-        v[start] = true;
-        for(int i : list[start]) {
-            int next = i;
-            if(!v[next]) {
-                dfs(next, depth+1);
+        for (int i = 0; i < n; i++){
+            dfs(i,1);
+            if (arrive){
+                break;
             }
         }
-        v[start] = false;
-
+        if (arrive)
+            System.out.println(1);
+        else
+            System.out.println(0);
     }
+
+    private static void dfs(int i, int depth) {
+
+        if (depth == 5 || arrive){
+            arrive = true;
+            return;
+        }
+        vis[i] =true;
+        for (int j : num[i])
+            if (!vis[j]) {
+                dfs(j, depth + 1);
+            }
+        vis[i] = false;
+    }
+
 }
